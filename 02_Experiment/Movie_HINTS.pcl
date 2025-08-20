@@ -1,0 +1,330 @@
+string expDir = "...\\02_Experiment\\"; # Adjust
+
+
+int ntrials = 648; # number of trials
+string button; # get response button
+string RT; # get RT of Response in ms
+int Response; # get Response
+string Response_TS; #Response_TS ################
+string t_or_f; # define if response was true or false
+string answer_given; # for output of questions, which answer was given to the question "Gespiegelt?"
+
+int trial_onset;	
+int current_time;
+int fixcross_duration; int fix_trial_duration; int fix_clock;	
+
+int firstpulse_time; 		################
+int npulse; int tpulse; int npulse1;	################
+
+int counter = 0; # counts trials in block
+
+int number_blocks = 6; # number of blocks
+int number_quests = 6; # numberof question after each Block
+# constant???
+int true_counter = 0;
+
+int block; # that is the block
+array <string> block_names[number_blocks] = {"Scene_4s","Scene_12s","Scene_36s",
+															"Shot_4s","Shot_12s","Shot_36s"};
+
+array<int> fix_dur_array [number_blocks] ={2100, 2500, 2400, 2600, 2200, 2300};
+array<int> fix_dur_quest [number_quests] ={800, 900, 1000, 1100, 1200, 1300};
+
+array<string> quest_cond[2] = {"original", "mirror"};
+array<string> answer_labels[2] = {"JA", "NEIN"};
+
+# -------------------
+# SIZE
+# ------------------- 
+## Full Screen
+#int dheight = display_device.height();
+#int dwidth  = display_device.width();
+
+#---------------------------------------------------------------
+# LOAD TRIAL FILE
+#---------------------------------------------------------------
+preset int vp; # name of subject, needs to be NEW, old files are not overwritten
+
+array <string> all_input[ntrials+1][9]; # how many is it 
+array <string> quest[number_quests+1][4];
+	
+# ---------------------------------------------------------------------------------#
+# Loading all Inoput files
+
+array<int> block_order [number_blocks];
+string block_order_txt = expDir + "block_orders\\block_order_sub" + printf(vp,"%02d") + ".txt";
+input_file block_order_file= new input_file; 
+block_order_file.open(block_order_txt);
+block_order_file.set_delimiter('\n');
+int count_1 = 0;
+loop until block_order_file.end_of_file() || count_1 == number_blocks || !block_order_file.last_succeeded() begin # read in all lines
+	count_1 = count_1 +1;
+	block_order[count_1] = block_order_file.get_int();
+end;
+block_order_file.close();
+
+int count;
+sub # subroutine for loading the number input files
+	loading_input (int blk, input_file block_input_file) 
+begin
+	string Input = expDir + "input_"+block_names[blk]+".txt"; # filename
+	block_input_file.open(Input); # open input file with filename
+	block_input_file.set_delimiter(9);
+	count = 0;
+	loop until block_input_file.end_of_file() || count == ntrials +1 || !block_input_file.last_succeeded() begin # read in all lines + columns of input file
+		count = count +1;
+		block_input_file.set_delimiter(9);
+		all_input[count][1]=block_input_file.get_string();
+		all_input[count][2]=block_input_file.get_string();
+		all_input[count][3]=block_input_file.get_string();
+		all_input[count][4]=block_input_file.get_string();
+		all_input[count][5]=block_input_file.get_string();
+		all_input[count][6]=block_input_file.get_string();
+		all_input[count][7]=block_input_file.get_string();
+		all_input[count][8]=block_input_file.get_string();
+		block_input_file.set_delimiter(10);
+		all_input[count][9]=block_input_file.get_string();
+	end;
+	block_input_file.close();
+end;
+
+
+# load question files for each block
+int quest_count;
+sub # subroutine
+	loading_quests (int blk, input_file quest_input_file) 
+begin
+	#string quest_board = expDir + "questions_"+block_names[blk]+".txt";
+	string quest_board = expDir + "quest_orders\\"+block_names[blk]+"\\quest_input_sub" + printf(vp,"%02d") +".txt";
+	quest_input_file.open(quest_board);
+	quest_input_file.set_delimiter(9);
+	quest_count = 0;
+	loop until quest_input_file.end_of_file() || quest_count == number_quests+1 || !quest_input_file.last_succeeded() begin
+		quest_count = quest_count +1;
+		quest_input_file.set_delimiter(9);
+		quest[quest_count][1]=quest_input_file.get_string();
+		quest[quest_count][2]=quest_input_file.get_string();
+		quest[quest_count][3]=quest_input_file.get_string();
+		quest_input_file.set_delimiter(10);
+		quest[quest_count][4]=quest_input_file.get_string();
+	end;
+	quest_input_file.close();
+end;
+	
+#-----------------------------------------------------------------------------------------------
+
+### Subroutine Trigger #???
+sub wait_for_pulse ( int pulse_num )								
+begin																			
+   loop until pulse_manager.main_pulse_count() > pulse_num	
+   begin	#?																	
+   end;	#?																	
+end;																			
+
+
+#### START OF EXPERIMENT####
+begin		
+output_file out_file = new output_file;										
+
+out_file.open(printf(vp,"%02d")+"_"+date_time("dd.mm.yy_hh.nn.ss")+".txt"); # "only" works till subject = 48
+# output for resting state
+out_file.print("ID	onset_ms	number_scan	time_scan	fix_duration");
+Rest_Start_trial.present();
+npulse = pulse_manager.main_pulse_count();
+Rest_Wait_trial.present();
+npulse1 = npulse +1;
+wait_for_pulse(npulse1);	
+
+fixcross_trial.set_duration(480000); 
+npulse = pulse_manager.main_pulse_count();
+fixcross_trial.present();
+
+current_time = clock.time(); 	
+stimulus_data fix_trial_data = stimulus_manager.last_stimulus_data();	
+trial_onset = fix_trial_data.time();	
+tpulse = pulse_manager.main_pulse_time(1); 									################
+out_file.print( "\n"+"first_trigger_at: "+ string(tpulse));		      ################ 
+tpulse = pulse_manager.main_pulse_time(npulse); 					      ################
+out_file.print ("\n"+printf(vp,"%02d")+"	"+string(trial_onset)+"	"+string(npulse)+"	"+string(tpulse)+"	"+string(current_time - trial_onset)); ################
+
+out_file.print("\n"+"ID	block	trial_block	trial_total	image	hierarchy	duration	onset_ms	number_scan	time_scan	img_duration	place	time	location	arousal_mean	number_people	duration_ratio");
+
+Start_trial.present();
+loading_trial.present();
+loop int k = 1
+#### CHANGE ####
+until k > block_order.count() begin
+	int current_block = block_order[k];
+	# the real part loading the input files
+	input_file block_input_k = new input_file;
+	loading_input(current_block, block_input_k);
+
+## PART FOR PRELOADING IAMGES IF NECESSARY
+	array<bitmap> images[ntrials]; # Array to store preloaded images
+	
+# Loop through the rows of the array
+	loop int i = 1 until i > ntrials begin
+		string image_path = expDir + "FrameStimuli_cropped\\" + block_names[current_block]+"\\"+ all_input[i+1][1]; # First column (index 1)
+		bitmap this_image = new bitmap(image_path);
+		this_image.load(); # Preload the image into memory
+		images[i] = this_image; # Add to the images array
+		i = i + 1;
+	end;
+	
+	next_block_text_blk.set_caption("Block " + string(k));
+	next_block_text_blk.redraw();
+	block_start_trial.present();
+	npulse = pulse_manager.main_pulse_count();		################
+   npulse1 = npulse +2;
+   wait_for_pulse(npulse1);	
+	tpulse = pulse_manager.main_pulse_time(npulse+1); ################
+	out_file.print( "\n"+ "trigger nr " + string(npulse +1) + " at " + string(tpulse)); ################							
+
+	npulse = pulse_manager.main_pulse_count();		################
+	tpulse = pulse_manager.main_pulse_time(npulse); ################
+	out_file.print( "\n"+ "trigger nr " + string(npulse) + " at " + string(tpulse)); ################
+
+	
+	#Blinking Fix_crosses ### have to chage that
+   fixcross_trial.set_duration(fix_dur_array[current_block]-999); 
+	fixcross_trial.present();
+	fixblink_trial.present();fixblink_trial.present();fixblink_trial.present();
+
+	loop int i = 1 
+		#until i  > 9 begin # for testing only 9 instead of 648 trials per block
+		until i > ntrials begin
+		counter = counter +1;
+		
+
+		#frame.unload();
+		#frame.set_filename(expDir + "FrameStimuli_cropped\\" + block_names[current_block]+"\\"+ all_input[i+1][1]);
+		#frame.load(); 
+		frame_pic.set_part(1, images[i]);
+		
+		npulse = pulse_manager.main_pulse_count();
+		tpulse = pulse_manager.main_pulse_time(npulse);
+		#break_trial.present();
+		frame_trial.present();
+		
+		current_time = clock.time(); 	#####
+		stimulus_data trial_data = stimulus_manager.last_stimulus_data();	#####
+		trial_onset = trial_data.time();	#####
+		
+		# what info do I need in the output file?
+		# write in output file
+		out_file.print ("\n"+printf(vp,"%02d")+"	"+block_names[current_block]+"	"+string(i)+"	"+string(counter)+"	"+
+							all_input[i+1][1]+"	"+all_input[i+1][2]+"	"+all_input[i+1][3]+"	"+string(trial_onset)+"	"+string(npulse)+"	"+string(tpulse)+"	"+string(current_time - trial_onset)+"	"+
+							all_input[i+1][4]+"	"+all_input[i+1][5]+"	"+all_input[i+1][6]+"	"+								# Do I need all these features here?
+							all_input[i+1][7]+"	"+all_input[i+1][8]+"	"+all_input[i+1][9]);		# Maybe better at some other point later, not to overwhelm"
+		i=i+1;
+	end;
+
+	input_file quest_input_k = new input_file;
+	loading_quests(current_block, quest_input_k);
+	out_file.print ("\n"+"Questions"+"	"+block_names[current_block]); ################
+	out_file.print ("\n"+"ID"+"	"+"Quest_No"+"	"+"Quest_frame"+"	"+"onset_ms"+"	"+"number_scan"+"	"+"time_scan"+"	"+"img_duration"+"	"+"Answer"+"	"+"Answer_given"+"	"+"RT"+"	"+"True_False"+"	"+"Resp_TS"); ################
+	
+	fix_dur_quest.shuffle();
+	Before_task_trial.present();
+	## PART FOR PRELOADING IAMGES IF NECESSARY
+	array<bitmap> quest_images[number_quests]; # Array to store preloaded images
+	
+# Loop through the rows of the array
+	loop int q = 1 until q > number_quests begin
+		string quest_path = expDir + "QuestImages\\" + block_names[current_block]+"\\"+ quest_cond[int(quest[q+1][4])]+"_"+quest[q+1][1]; # First column (index 1)
+		bitmap this_quest = new bitmap(quest_path);
+		this_quest.load(); # Preload the image into memory
+		quest_images[q] = this_quest; # Add to the images array
+		q = q + 1;
+	end;
+		#quest_frame.unload();
+		#quest_frame.set_filename(expDir + "QuestImages\\" + block_names[current_block]+"\\"+ quest_cond[int(quest[q+1][4])]+"_"+quest[q+1][1]);
+		#quest_frame.load(); 	
+	loop int q = 1
+		until q > number_quests begin
+		answer_labels.shuffle();
+		fix_event.set_duration(fix_dur_quest[q]);
+		quest_frame_pic.set_part(1, quest_images[q]);
+		fixcross_trial.present();
+		
+		npulse = pulse_manager.main_pulse_count();
+		quest_frame_trial.present();
+		tpulse = pulse_manager.main_pulse_time(npulse);			
+		current_time = clock.time(); 	#####
+		stimulus_data quest_trial_data = stimulus_manager.last_stimulus_data();	#####
+		trial_onset = quest_trial_data.time();	#####
+	
+		int newResponses = response_manager.total_response_count();
+		Response = 0; # collecting response
+		
+		left_text.set_caption(answer_labels[1]);
+		left_text.redraw();
+		right_text.set_caption(answer_labels[2]);
+		right_text.redraw();
+		double start_time = clock.time_double();
+		question_trial.present(); # presenting question	
+		
+		Response = 0; # collecting response
+		if (response_manager.response_count() > 0) then 
+			response_data resp = response_manager.get_response_data(newResponses+1);
+			Response = resp.button();
+			Response_TS = string(resp.time());
+			RT = string(round(resp.time() - start_time,2)); # calculating response time
+		end;
+	
+			
+		if Response != 1 && Response != 2 then # defining outcome of response
+			RT = "NA";
+			t_or_f = "miss"; 
+			answer_given = "MISS";
+			Response_TS	= "NA";
+		elseif (answer_labels[Response] == "JA" && quest[q+1][4] == "1") || (answer_labels[Response] == "NEIN" && quest[q+1][4] == "2") then
+			t_or_f = "true"; 
+			true_counter = true_counter +1;			
+			# Define Labels for given answer
+			if answer_labels[Response] == "JA" then
+				answer_given = quest_cond[1];
+			elseif answer_labels[Response] == "NEIN" then
+				answer_given = quest_cond[2];
+			end;
+		elseif (answer_labels[Response] == "NEIN" && quest[q+1][4] == "1") || (answer_labels[Response] == "JA" && quest[q+1][4] == "2") then
+			t_or_f = "false"; 
+			# Define Labels for given answer
+			if answer_labels[Response] == "JA" then
+				answer_given = quest_cond[1];
+			elseif answer_labels[Response] == "NEIN" then
+				answer_given = quest_cond[2];
+			end;
+		end;
+		
+		out_file.print ("\n"+printf(vp,"%02d")+"	"+string(q)+"	"+quest[q+1][1]+"	"+
+							string(trial_onset)+"	"+string(npulse)+"	"+string(tpulse)+"	"+string(current_time - trial_onset)+"	"+
+							quest_cond[int(quest[q+1][4])]+"	"+answer_given+"	"+RT+"	"+t_or_f+"	"+ Response_TS);################
+		q=q+1;
+	end;
+#	npulse = pulse_manager.main_pulse_count();		################
+#	tpulse = pulse_manager.main_pulse_time(npulse); ################
+#	out_file.print( "\n"+ "trigger nr " + string(npulse) + " at " + string(tpulse)); ################
+
+	if k < block_order.count() then
+		next_block_text_blk.set_caption("Block " + string(k+1));
+		next_block_text_blk.redraw();
+		block_break_trial.present();
+	end;
+	k=k+1;	
+#	npulse = pulse_manager.main_pulse_count();
+#	npulse1 = npulse +1;
+#	wait_for_pulse(npulse1); #calls the subroutine to wait for one additional pulse
+end;
+#################At end of the experiment######################
+npulse = pulse_manager.main_pulse_count();		################
+tpulse = pulse_manager.main_pulse_time(npulse); ################
+out_file.print( "\n"+ "trigger nr " + string(npulse) + " at " + string(tpulse)); ################
+
+final_score_text.set_caption(string(true_counter) + "/36");
+final_score_text.redraw();
+final_feedback_trial.present();
+out_file.print( "\n"+ "Correct answers: "+ string(true_counter)+ "/36");
+out_file.close();
+End_trial.present(); # The End!
+end;
