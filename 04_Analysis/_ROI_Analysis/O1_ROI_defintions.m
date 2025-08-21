@@ -106,15 +106,36 @@ end
 %% 5. pmDMN
 % "POSTERIOR DORSAL DMN" Shirer et al., 2012
 % Download from: https://drive.google.com/drive/u/0/folders/1mojjaC3kVbmp7tFU3fWsTQUvuVhMtSXr
-cd('...\GreciusFunc\GreciusFunc\GreciusFunc'); 
-gunzip('GreciusFunc_prob-2mm.nii.gz'); 
-
-% No Code, was done in GUI
-% Description
+cd('...\dorsal_DMN'); 
+% posterior medial DMN cluster is cluster number 4
 % 1. Cluster is bilateral, we wanted to split to left and rigth hemisphere
 % 2. created left and right hemisphere ROI from WFU pick atlas toolbox (Maldjian et al., 2003)
 % 3. using SPM's imcalc create binary maps that describe overlap of Shirer
 % et al. (2012) pmDMN cluster and left/right hemisphere
+pmDMN = fullfile(pwd, '04', '4.nii'); 
+
+%hemispheres to split cluster to left and right are found in the
+%_Additional_Files
+
+addFileDir = '...\_AdditionalFiles';
+hemi = {'Left.nii';'Right.nii'};
+
+
+for i = 1:numel(hemi)
+    jobs{1}.spm.util.imcalc.input = {pmDMN;fullfile(addFileDir,hemi{i})};
+    jobs{1}.spm.util.imcalc.output = ['pmDMN_', hemi{i}];
+    jobs{1}.spm.util.imcalc.outdir = {pwd};
+    jobs{1}.spm.util.imcalc.expression = 'i1.*i2';
+    jobs{1}.spm.util.imcalc.var = struct('name', {}, 'value', {});
+    jobs{1}.spm.util.imcalc.options.dmtx = 0;
+    jobs{1}.spm.util.imcalc.options.mask = 0;
+    jobs{1}.spm.util.imcalc.options.interp = 1;
+    jobs{1}.spm.util.imcalc.options.dtype = 64;
+    
+    spm_jobman('run', jobs); 
+    clear jobs;
+end
+
 
 %% Supplemental ROIs based on areas commonaly realted to the processing of audio-visual narratives aka movies
 
