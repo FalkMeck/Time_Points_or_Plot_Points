@@ -15,10 +15,10 @@ study_dir = '...\NIFTI\';
 topup_sep_dir = '...\NIFTI';
 
 %SUBJECTS
-subjects = ['BHM_437'];
+subjects = ['BHM_437']; %Example, adjust subject Code respectively
 
 logfile_dir = '...\Logfiles\';
-subject_nums = [1];
+subject_nums = [1]; %Example, adjust subject number respectively
 
 
 start_i = 1;

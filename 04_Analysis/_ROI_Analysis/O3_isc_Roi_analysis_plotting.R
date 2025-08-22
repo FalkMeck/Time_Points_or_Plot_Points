@@ -10,9 +10,23 @@ library(ggplot2)
 study_dir = '.../NIFTI'
 setwd(study_dir)
 
-subjects = c("BHM_437")
+subjects = c("SHM_134","BST_790","KLN_831","SNE_929","UBN_644","MWL_955",
+             "UHE_774","APN_733","SRE_111","CDT_864","COK_281","MDD_513",
+             "MGH_898","SHG_243","CEN_612","DKL_934","KTF_128","SUA_130",
+             "SHN_281","APN_759","MBZ_294","CHR_114","SCE_360","SRN_493",
+             "NPN_211","NTA_213","DHR_253","GIN_112","JTR_424","MKN_944",
+             "KWL_123","LMS_823","RRE_130","SBD_234","SIN_255","SLG_581",
+             "RGH_912","BHG_483","AWR_117","KMR_411","BGU_132","CHM_519",
+             "HMN_829","ECD_152","KBD_286","IWL_121","HDN_119","GCD_923")
 
-subject_nums = c(1)
+subject_nums = c( 1, 2, 3, 6, 8, 9,
+                 10,20,25,14,42,13,
+                 15,11,35,17,45,34,
+                  5,16,18,19,33,44,
+                 38,37,21,22,23,24,
+                 41,40,28,12,31,43,
+                 30,27, 4,48,36,46,
+                  7,32,39,47,26,29)
 
 subjects_sort = mark::sort_by(subjects, subject_nums)
 
@@ -60,7 +74,7 @@ iscData$Subj2 = factor(iscData$Subj2, levels = subjects_sort, labels = subjects_
 iscData$Hierarchy = factor(iscData$Hierarchy, levels = c("Shot", "Scene"), labels = c("Shot", "Scene"))
 iscData$Duration = factor(iscData$Duration, levels = dur, labels = dur)
 
-save(iscData, file = "iscData_20250528.RData")
+iscData = read.csv(".../Shared_data/ROI_data.csv")
 
 round(iscData$ISC_pair_FishZ[iscData$Subj1 == subjects_sort[1] & iscData$Subj2 == subjects_sort[2]],2) == 
 round(iscData$ISC_pair_FishZ[iscData$Subj2 == subjects_sort[1] & iscData$Subj1 == subjects_sort[2]],2)
@@ -79,7 +93,7 @@ iscData_unique_brms <- iscData %>%
 
 iscData$rank1 = iscData$rank2 = NULL
 
-save(iscData_unique_brms, file = "iscData_unique_brms_20250528.RData")
+save(iscData_unique_brms, file = "iscData_unique_brms.RData")
 
 ##LME4 models
 
@@ -104,7 +118,7 @@ for (roi in all_rois) {
 }
 
 
-outDir = ".../ROI_analysis/_ANALYSIS/model_check_performance_v1_20250528"
+outDir = ".../ROI_analysis/_ANALYSIS/model_check_performance"
 
 for (roi in all_rois) {
   png(file = file.path(outDir, paste0("check_model_",roi,".png")), width = 1200, height = 800)
@@ -171,7 +185,7 @@ boot_results = pblapply(names(results_list), function(roi) {
   )
 })
 
-save.image(".../isc_Roi_analysis_20250528_2.RData")
+save.image(".../isc_Roi_analysis_2.RData")
 
 # Function to get summary stats per ROI
 summarize_boot_emm <- function(boot, roi) {
@@ -231,7 +245,7 @@ boot_summary_con = do.call(rbind, lapply(seq_along(boot_results), function(i) {
   summ
 }))
 
-save.image(".../isc_Roi_analysis_20250528_3.RData")
+save.image(".../isc_Roi_analysis_3.RData")
 
 
 # Correct the p-Values
@@ -310,7 +324,7 @@ boot_summary_emm$Duration = conditions[,2]
 boot_summary_emm$Hierarchy = factor(boot_summary_emm$Hierarchy, levels = c("Shot", "Scene"), labels = c("Shot", "Scene"))
 boot_summary_emm$Duration = factor(boot_summary_emm$Duration, levels = c("4s", "12s", "36s"), labels = c("4s", "12s", "36s"))
 
-outDir = ".../ROI_analysis/_ANALYSIS/boot_plots_v1_20250529/_color_picked_no_legend"
+outDir = ".../ROI_analysis/_ANALYSIS/boot_plots/_color_picked_no_legend"
 text_size= 8
 for (roi in 1:length(all_rois)) {
   boot_df = data.frame(subset(boot_summary_emm, boot_summary_emm$ROI == all_rois[roi]))
