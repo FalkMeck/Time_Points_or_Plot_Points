@@ -40,6 +40,14 @@ Using [ffmpeg](https://ffmpeg.org/) we used the HH:MM:SS:FF formatted time codes
 
 Loading a clip and based on the duration condition (4s, 12s or 36s) isochonically exporting 12, 36 or 108 frames from each clip.
 
+#### O5_calcualte_all_low_visualfeature.m
+
+Prepration of supplemental Analysis of low-level Features including: luminance, contrast, saturation, overall Image complexity, motion energy and normalized percetual difference. Script extracts Features from Frames used in Experiment. Only normalized perceptual differnce is provided in "trial_info_VisualFeature.csv" in "_Addtional_Files".
+
+#### O6_Analyze_low_level_features.R
+
+Non-parametric ANOVA Analysis of the Features extracted by "O5_calcualte_all_low_visualfeature.m" across experimental conditions. Additionally, Comparision of the Position of presented Scenes and Shots along the movie's runtime across conditions.
+
 ### 02\. Experiment
 
 This directory contain both the code for the cover task as well as all code to run the experiment in Neurobs Presentation.
@@ -187,6 +195,10 @@ Using MarsBar to extract the average value from all ROIs from all Fisher’s z-s
 4. Parametric bootstrapping and saving FDR corrected post-hoc tests
 5. Plotting based on bootstrapped values
 
+##### _Supplemental_ROI_Analysis
+* O1_MakePostHocSTSROIs.m: Combination of O1_ROI_defintions.m and O2_Extract_ROI_data.m applied to the post-hoc, exploratory ROI Analysis in the superior temporal sulcus (STS), so code creates the ROIs and extract all data
+* O2_isc_Roi_analysis_STS.R: same procedure as O3_isc_Roi_analysis_plotting.R applied to the exploratory STS ROIs
+
 ### 05\. Graphics
 
 This directory specifically refers to the result figures of the whole-brain analysis (Figure 3 – 5). We applied the “Highlight, don’t Hide” principle ([Taylor et al., 2023](https://doi.org/10.1016/j.neuroimage.2023.120138)). Thus, clusters with non-significant p-values are not omitted but displayed at lower opacity, while significant cluster are depicted at full opacity with a black border. While the paper presents the code in volume space we created a version in surface space.
@@ -215,4 +227,6 @@ Library import requirements:
 
 Example how the graphics for the paper were created.
 For all contrasts of interest select the respective input files (correlation-map, t-statistics-map, significant-cluster-map). The iterate through both hemispheres and the inflation True or False options. We used the surface template ‘fsaverage7’ and the afni\_hotcold colormap that is included as default in HighlightSurfaceMapVisualizer.py. The selection views = None enables that all 6 views (front, back, left, right, top, bottom) are plotted.
+
+(Code for the creation of the plots of the ROI projected to the Surface can be found under ROI Analysis\_AdditionalFiles\ROI_surface.py)
 
