@@ -186,7 +186,7 @@ class HighlightSurfaceMapVisualizer:
 
         if cluster_faces.size > 0:
             cluster_faces_pv = np.hstack([np.full((cluster_faces.shape[0], 1), 3), cluster_faces])
-            mesh_cluster = pv.PolyData(self.coords, cluster_faces_pv)
+            mesh_cluster = pv.PolyData(coords_offset, cluster_faces_pv)
             
             # Same colors but with full opacity for clusters
             rgba_opaque = np.concatenate([colors[:len(self.stat_data)], mask.astype(np.float64).reshape(-1, 1)], axis=1)
@@ -200,7 +200,7 @@ class HighlightSurfaceMapVisualizer:
                 feature_edges=False,
                 manifold_edges=False
             )
-            plotter.add_mesh(outline_edges, color='black', style='wireframe', line_width=5)
+            plotter.add_mesh(outline_edges, color='black', style='wireframe', line_width=15)
 
         # Render each view
         for name, cpos in self.views.items():

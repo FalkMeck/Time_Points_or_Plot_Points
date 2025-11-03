@@ -5,16 +5,21 @@ Created on Wed Jun 25 15:49:35 2025
 @author: f_meck01
 """
 
-### Create the plots necessary!
+### Create the plots!
 
 import os
-import HighlightSurfaceMapVisualizer_bothHemi as hsmv
+import HighlightSurfaceMapVisualizer as hsmv
 
 os.chdir('...05_Graphics')
 study_dir = '.../_AFNI_Analysis/'
          
 contrasts= ["01_Scene_Shot", "02_04s_12s","03_04s_36s","04_12s_36s",
            "INT01_12sSceneShot_04sSceneShot","INT02_36sSceneShot_04sSceneShot"]
+#additional Contrasts
+#contrasts= ["05_Shot04_Scene04","06_Shot12s_Scene12s","07_Shot36s_Scene36s","08_Shot04s_Shot12s","09_Shot04_Shot36s",
+            #"10_Shot12s_Shot36s","11_Scene04s_Scene12s","12_Scene04s_Scene36s","13_Scene12s_Scene36s",
+            #"INT03_36sSceneShot_12sSceneShot"]
+
 
 
 for i, con in enumerate(contrasts):
