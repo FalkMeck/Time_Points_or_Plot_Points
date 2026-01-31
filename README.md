@@ -11,7 +11,7 @@ Requirements:
 * [MarsBaR Toolbox](https://marsbar-toolbox.github.io/download.html) for SPM12
 * [Anatomy Toolbox](https://github.com/inm7/jubrain-anatomy-toolbox)
 
-If you want to download a minimally preprocessed example participant (ran O1\_preprocessing\_Movie\_HINTS.m (Part 1)), all pairwise-ISC Maps, or the data for the ROI analyis, click [here](https://uni-muenster.sciebo.de/s/TLFLHTP4ysQgayr).
+If you want to download a minimally preprocessed example participant (ran O1\_preprocessing\_Movie\_HINTS.m (Part 1)), all pairwise-ISC Maps, or the data for the ROI analyis, click [here (Sciebo)](https://uni-muenster.sciebo.de/s/TLFLHTP4ysQgayr) and [here (OSF)](https://osf.io/xk6cv/overview?view_only=036a15ee8620401a9b1db5fd6fc25086).
 
 ## Contents
 
