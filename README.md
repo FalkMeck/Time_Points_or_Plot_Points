@@ -7,17 +7,17 @@ Requirements:
 * MATLAB, R(Studio)
 * AFNI, FSL, SPM12
 * [Tools for NifTI and ANALYZE Image](https://de.mathworks.com/matlabcentral/fileexchange/8797-tools-for-nifti-and-analyze-image) by Jimmy Shen
-* [WFU pickatlas Toolbox](https://www.nitrc.org/projects/wfu_pickatlas/) for SPM12 (if you are interested in a MNI version of the Desikan-Killiany atlas incl. the lausanne-sub-parcellations ([Cammoun et al., 2012](https://doi.org/10.1016/j.jneumeth.2011.09.031))for the WFU toolbox feel free to contact me (f\_meck01@uni-muenster.de)).
+* [WFU pickatlas Toolbox](https://www.nitrc.org/projects/wfu_pickatlas/) for SPM12 (if you are interested in a MNI version of the Desikan-Killiany atlas incl. the lausanne-sub-parcellations ([Cammoun et al., 2012](https://doi.org/10.1016/j.jneumeth.2011.09.031)) for the WFU toolbox feel free to contact me (f\_meck01@uni-muenster.de)).
 * [MarsBaR Toolbox](https://marsbar-toolbox.github.io/download.html) for SPM12
 * [Anatomy Toolbox](https://github.com/inm7/jubrain-anatomy-toolbox)
 
-If you want to download a minimally preprocessed example participant (ran O1\_preprocessing\_Movie\_HINTS.m (Part 1)), all pairwise-ISC Maps, or the data for the ROI analyis, click [here (Sciebo)](https://uni-muenster.sciebo.de/s/TLFLHTP4ysQgayr) and [here (OSF)](https://osf.io/xk6cv/overview?view_only=036a15ee8620401a9b1db5fd6fc25086).
+If you want to download a minimally preprocessed example participant (ran O1\_preprocessing\_Movie\_HINTS.m (Part 1), all pairwise-ISC Maps, or the data for the ROI analyis, click [here (Sciebo)](https://uni-muenster.sciebo.de/s/TLFLHTP4ysQgayr) and [here (OSF)](https://osf.io/xk6cv/overview?view_only=036a15ee8620401a9b1db5fd6fc25086).
 
 ## Contents
 
 ### 01\. Stimuli
 
-The stimuli in this study were created from frames of the movie *Forrest Gump* (Zameckis, 1994). We used the publically available annotation from the [StudyForrest project](https://www.studyforrest.org/about.html) for the selection and assignment of all scenes and shots to the conditions of the experiment. The code describes our selection process from movie to extracted frames.
+The stimuli in this study were created from frames of the movie *Forrest Gump* (Zemeckis, 1994). We used the publically available annotation from the [StudyForrest project](https://www.studyforrest.org/about.html) for the selection and assignment of all scenes and shots to the conditions of the experiment. The code describes our selection process from movie to extracted frames.
 
 #### 01\_Scene\_Shot\_Selection.R
 
