@@ -1,6 +1,6 @@
 # Time Points or Plot Points?
 
-This repository contains all the code used in data collection, preparation and analysis in the paper *Time Points or Plot Points - Are movies processed according to their temporal duration or their underlying content structure?* (Mecklenbrauck \& Schubotz, in review).
+This repository contains all the code used in data collection, preparation and analysis in the paper *Time Points or Plot Points - Are movies processed according to their temporal duration or their underlying content structure?* [(Mecklenbrauck \& Schubotz, 2026)](https://doi.org/10.1016/j.neuroimage.2026.121809).
 
 Requirements:
 
